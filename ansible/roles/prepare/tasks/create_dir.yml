@@ -1,0 +1,6 @@
+---
+      - name: "create remote dir"
+        file:
+#          path: /opt/zabbix_server/
+          path: "{{zabbix_dir}}"
+          state: directory

@@ -1,0 +1,5 @@
+---
+      - name: "check OS version"
+        debug:
+          msg: "remote host OS version is centos8  "
+        when: ansible_distribution_version is version("8","eq")

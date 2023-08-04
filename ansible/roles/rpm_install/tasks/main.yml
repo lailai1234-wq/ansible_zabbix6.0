@@ -1,0 +1,3 @@
+---
+# tasks file for zabbix
+- include: rpm_install.yml

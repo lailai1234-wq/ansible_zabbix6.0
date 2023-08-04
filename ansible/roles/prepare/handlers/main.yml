@@ -1,0 +1,4 @@
+---
+# handlers file for zabbix
+      - name: install package
+        shell: rpm -ivh "{{zabbix.dir}}"/*.rpm --force --nodeps

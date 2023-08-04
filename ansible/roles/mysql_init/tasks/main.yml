@@ -1,0 +1,3 @@
+---
+# tasks file for zabbix
+- include: mysql_zabbix.yml

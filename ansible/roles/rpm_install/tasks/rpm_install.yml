@@ -1,0 +1,14 @@
+---
+- name: check zabbix server installed
+  shell: rpm -qa |grep zabbix |wc -l
+  ignore_errors: yes
+  register: returnmsg
+- debug:
+    msg: "installed rpm of zabbix number is {{returnmsg.stdout}}"
+#- debug: 
+ #   msg: "chenggong"
+#  when: returnmsg.stdout == "0"
+ 
+- name: install local rpm
+  shell: "rpm -ivh {{zabbix_dir}}/*.rpm --force --nodeps"
+  when: returnmsg.stdout == "0" 

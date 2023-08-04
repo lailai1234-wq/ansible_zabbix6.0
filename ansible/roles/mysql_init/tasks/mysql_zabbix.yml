@@ -1,0 +1,4 @@
+---
+
+      - name: "create zabbix DB and zabbix user/passwd"
+        script: mysql_chushihua.sh

@@ -1,0 +1,16 @@
+---
+- hosts: zabbix_server
+  roles:
+    - prepare
+    - rpm_install
+    - mysql_enable
+
+- hosts: ansible
+  roles: 
+    - mysql_init
+- hosts: zabbix_server
+ # gathering Facts: no
+  roles:
+    - zabbixsql_daoru
+    - restart_service
+    - stop_security

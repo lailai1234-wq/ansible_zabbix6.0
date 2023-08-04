@@ -1,0 +1,11 @@
+---
+- name: restart some service
+  service: 
+    name: "{{ item }}"
+    state: restarted
+    enabled: yes
+  with_items:
+    - zabbix-server 
+    - zabbix-agent2
+    - httpd
+    - php-fpm

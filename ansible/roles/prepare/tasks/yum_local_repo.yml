@@ -1,0 +1,24 @@
+---
+ #     - name: "create remote dir"
+  #      file:
+#          path: /opt/zabbix_server/
+  #        path: "{{zabbix_dir}}"
+  #        state: directory
+
+      - name: "copy rpm"
+        copy:
+          src: "{{zabbix_tar}}" 
+          dest: "{{zabbix_dir}}"
+        tags: copy_ceshi
+
+      - debug:
+          msg: "cp is ok"
+      - debug:
+          msg: "{{zabbix_dir}}/zabbix_install_rpm.tar.gz"
+
+      - name: "jiaya tar.gz"
+        unarchive:
+          src: "{{zabbix_dir}}/zabbix_install_rpm.tar.gz"
+          dest: "{{zabbix_dir}}"
+          copy: no
+   #     shell: tar -zxvf "{{zabbix.dir}}"/*.tar.gz -C "{{zabbix.dir}}"

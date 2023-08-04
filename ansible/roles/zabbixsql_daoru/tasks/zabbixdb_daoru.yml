@@ -1,0 +1,4 @@
+---
+- name: zabbix.sql input mysql
+  shell: zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql -uzabbix -p123456 zabbix
+  ignore_errors: true

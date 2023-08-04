@@ -1,0 +1,5 @@
+---
+- include: bianliang.yml
+- include: env_check.yml
+- include: create_dir.yml
+- include: yum_local_repo.yml

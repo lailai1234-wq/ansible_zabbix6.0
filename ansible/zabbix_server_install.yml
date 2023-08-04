@@ -1,0 +1,119 @@
+---
+  - hosts: zabbix_server
+    remote_user: root
+    vars:
+      - zabbix:
+          dir: /opt/zabbix_server
+          tar: /opt/zabbix_install_rpm.tar.gz  
+##加-是代表数组，不加是对象，key/value         
+    tasks:
+
+      - debug:
+          msg: '{{zabbix.dir}}'
+        tags: ceshi
+
+      - debug:
+          msg: '{{zabbix.tar}}'       
+        tags: ceshi   
+
+ 
+      - name: "初始环境检查"
+        debug:
+          msg: "当前远程主机操作系统为centos8"
+        when: ansible_distribution_version is version("8","eq")
+
+      - name: "创建远程软件目录"
+        file:
+#          path: /opt/zabbix_server/
+          path: "{{zabbix.dir}}"
+          state: directory
+
+      - name: "拷贝软件包"
+        copy:
+          src: "{{zabbix.tar}}" 
+          dest: "{{zabbix.dir}}"
+
+      - debug:
+          msg: "安装包拷贝完成"
+
+      - name: "解压软件包"
+        shell: tar -zxvf "{{zabbix.dir}}"/*.tar.gz -C "{{zabbix.dir}}"
+        notify: install package
+
+      - meta: flush_handlers
+          
+      - name: "启动mysql"
+        service: 
+          name: mariadb
+          state: started
+          enabled: yes
+    handlers:
+      - name: install package
+        shell: rpm -ivh "{{zabbix.dir}}"/*.rpm --force --nodeps
+
+  - hosts: ansible
+    remote_user: root
+    tasks:
+
+      - name: "创建zabbix数据库，zabbix用户及密码"
+        script: /etc/ansible/mysql_chushihua.sh
+
+
+  - hosts: zabbix_server
+    remote_user: root
+    tasks:
+
+      - name: "导入zabbix数据库模板"
+        shell: zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql -uzabbix -p123456 zabbix
+
+      - name: "修改zabbix配置文件中的数据库密码"
+        lineinfile:
+          path: /etc/zabbix/zabbix_server.conf
+          regexp: '^DBPassword='
+          line: DBPassword=123456
+
+      - name: "启动相关进程"
+        service: 
+          name: "{{ item }}"
+          state: started
+          enabled: yes
+        with_items:
+          - zabbix-server 
+          - zabbix-agent2
+          - httpd
+          - php-fpm
+              
+ #     - name: "临时关闭selinux"
+ #       shell: setenforce 0
+ #       ignore_errors: yes
+
+##      lineinfile:
+  #        path: /etc/selinux/config
+  #        regexp: '^SELINUX='
+ #         line: SELINUX=disabled
+      - name: "关闭selinux"
+        selinux:
+          state: disabled
+
+      - name: "关闭防火墙"
+        service:
+          name: firewalld
+          state: stopped
+          enabled: no
+        ignore_errors: yes
+
+      - name: Stop and disable NetworkManager
+        service:
+          name: NetworkManager
+          state: stopped
+          enabled: no
+        ignore_errors: yes
+
+
+
+             
+
+
+
+
+

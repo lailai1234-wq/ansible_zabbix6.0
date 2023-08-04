@@ -1,0 +1,9 @@
+---
+
+- debug:
+    msg: "{{zabbix_dir}}"
+  tags: ceshi
+
+- debug:
+    msg: "{{zabbix_tar}}"       
+  tags: ceshi   
